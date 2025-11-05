@@ -5,14 +5,7 @@ exports.listUsers = (req, res, next) => {
         const { q, minAge, maxAge, limit = 50, offset = 0 } = req.query;
         let data = User.findAll();
 
-        // Petits filtres côté controller (démo simple)
-        if (q) data = data.filter(u =>
-            u.name.toLowerCase().includes(String(q).toLowerCase()));
-        if (minAge) data = data.filter(u => u.age >= Number(minAge));
-        if (maxAge) data = data.filter(u => u.age <= Number(maxAge));
-
-        const start = Number(offset), end = start + Number(limit);
-        return res.status(200).json({ total: data.length, data: data.slice(start, end) });
+        return res.status(200).json({ data });
     } catch (e) { next(e); }
 };
 

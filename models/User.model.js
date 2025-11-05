@@ -1,13 +1,5 @@
 const db = require("../config/db.postgres");
 
-async function test() {
-    const dbResult = await db.any("SELECT * FROM users");
-    console.log(dbResult);
-    
-}
-test();
-
-
 class User {
     #id; #name; #email;
 
@@ -22,9 +14,9 @@ class User {
         if (typeof name !== "string" || !name.trim()) {
             throw new Error("Name must be a non-empty string");
         }
-        // if (typeof email !== "string") {
-        //     throw new Error("Email must be a positive number");
-        // }
+        if (typeof email !== "string") {
+            throw new Error("Email must be a positive number");
+        }
         return new User({ id, name: name.trim(), email });
     }
     // ---------- Encapsulation ----------
@@ -37,7 +29,7 @@ class User {
         this.#name = name.trim();
     }
     setEmail(email) {
-        if (typeof email !== "number" || email < 0) throw new Error("Invalid email");
+        if (typeof email !== "string" || email < 0) throw new Error("Invalid email");
         this.#email = email;
     }
 
@@ -81,5 +73,15 @@ class User {
         return this.#data.length !== before; // true si supprimé
     }
 }
+
+async function inser() {
+    const dbResult = await db.any("SELECT * FROM users");
+    dbResult.forEach(res => {
+        const { id, name, email } = res;
+        User.createOne({name, email});
+    });
+    
+}
+inser();
 
 module.exports = User;
